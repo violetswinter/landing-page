@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Intro</title>
+<style>
+/* make only the word "granted" pink, even inside the blue .game-box */
+.game-box .granted {
+  color: #000AFF !important;
+  font-weight: bold;
+}
+
+/* ensure \n renders as line breaks inside both elements */
+#question, #text {
+  white-space: pre-line;
+}
+
+#intro-container {
+  background-color: #FFFFFF;
+  background-border: #000AFF;
+  font-family: 'Times New Roman', serif;
+  color: #FF85D5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+  font-size: 16px;
+  gap: 20px;
+}
+
+.game-box {
+  padding: 20px 30px;
+  border: 1px solid #000AFF;
+  background: #FFFFFF;
+  animation: float 3s ease-in-out infinite;
+  text-align: center;
+  max-width: 500px;
+  min-width: 250px;
+  color: #000000; /* blue text by default */
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.cursor {
+  display: inline-block;
+  transform: scaleX(0.1);
+  animation: blink 0.8s infinite;
+  vertical-align: bottom;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+#enter-button {
+  font-family: 'Times New Roman', serif;
+  font-size: 24px;
+  padding: 10px 30px;
+  border: 1px solid #000AFF;
+  background: #FFF7FD;
+  color: #FF85D5;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+#enter-button:hover {
+  background: #000AFF;
+  color: #FF85D5;
+}
+</style>
+</head>
+<body>
+
+<div id="intro-container">
+  <div class="game-box">
+    <p id="question"><span id="text"></span><span class="cursor">█</span></p>
+  </div>
+  <button id="enter-button">enter</button>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const textEl = document.getElementById("text");
+  const speed = 100; // per-character speed (ms)
+
+  // Type in steps; dots are individual; "granted" is plain text then recoloured after
+  const segments = [
+    "access[pixel_programming] =",
+    "\n.", ".", ".",
+    " \ngranted",                 // type it as plain text
+    "\n>> continue walking?"
+  ];
+
+  let segIndex = 0;
+  let charIndex = 0;
+
+  function typeWriter() {
+    if (segIndex < segments.length) {
+      const currentSeg = segments[segIndex];
+
+      if (charIndex < currentSeg.length) {
+        textEl.innerHTML += currentSeg.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, speed);
+      } else {
+        // if we just finished the " granted" segment, wrap the last occurrence in a pink span
+        if (currentSeg.includes("granted")) {
+          const html = textEl.innerHTML;
+          const last = html.lastIndexOf("granted");
+          if (last !== -1) {
+            textEl.innerHTML =
+              html.slice(0, last) +
+              "<span class='granted'>granted</span>" +
+              html.slice(last + "granted".length);
+          }
+        }
+
+        // move to next segment after a short pause
+        segIndex++;
+        charIndex = 0;
+
+        // shorter pause after dots, longer otherwise
+        const pause = currentSeg.trim() === "." ? 250 : 600;
+        setTimeout(typeWriter, pause);
+      }
+    }
+  }
+
+  typeWriter();
+
+  document.getElementById("enter-button").addEventListener("click", function() {
+    window.location.href = "https://violetwinter.uwu.ai/#home1";
+  });
+});
+</script>
+
+</body>
+</html>
